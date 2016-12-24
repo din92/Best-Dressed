@@ -18,6 +18,11 @@
     $scope.showScrapeDetails = false;
     $scope.gotScrapeResults = false;
     $scope.loading = false;
+    $scope.busy = true;
+    $scope.allData = [];
+    var page =0;
+    var step =4;
+
 
     var alertSuccess = $alert({
       title: "Success!",
@@ -45,7 +50,8 @@
 
     //Watch for URL changes,Scrape and display results
     $scope.$watch("look.link", function (newVal, oldVal) {
-      if (newVal.length > 5) {
+      console.log("New Value of "+newVal);
+       if (newVal.length > 5) {
         $scope.loading = true;
         var link = { url: $scope.look.link }
         scrapeAPI.getScrapedDeatils(link).then(function (response) {
@@ -66,7 +72,7 @@
             $scope.loading = false;
             $scope.uploadLookForm = false;
           })
-      }
+     }
     });
     $scope.showUploadForm = function () {
       $scope.uploadLookForm=true;
@@ -75,12 +81,28 @@
     }
     looksAPI.getAllLooks().then(function (response) {
       console.log(response);
-      $scope.looks = response.data;
-
+      //$scope.looks = response.data;
+      $scope.allData = response.data;
+      $scope.nextPage();
+      $scope.busy = false;
     })
       .catch(function (err) {
         console.log("failed to get Looks " + err);
       })
+
+      $scope.nextPage = function(){
+        var lookLength = $scope.looks.length;
+        if($scope.busy){
+          return;  
+        }
+        $scope.busy=true;
+        $scope.looks = $scope.looks.concat($scope.allData.splice(page*step,step));
+        page++;
+        $scope.busy = false;
+        if($scope.looks.length===0){
+          $scope.noMoreData=true;
+        }
+      }
 
     $scope.addScrapePost = function () {
       var look = {
@@ -108,6 +130,19 @@
           $scope.showScrapeDetails = false;
         })
     }
+
+    $scope.addVote = function(look) {
+
+      looksAPI.upVote(look)
+        .then(function(data) {
+          console.log(data);
+          look.upVotes++;
+        })
+        .catch(function(err) {
+          console.log('failure adding like');
+        });
+    }
+
     $scope.uploadPic = function (file) {
       Upload.upload({
         url: "/api/mylooks/upload/",

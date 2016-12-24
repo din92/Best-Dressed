@@ -13,6 +13,7 @@ module.exports = function(app) {
   // Insert routes below
   app.use('/api/mylooks/', require('./api/mylooks'));
   app.use("/api/links",require("./api/imgScraper"));
+  app.use("/api/comment",require("./api/comment"));
   app.use('/api/users', require('./api/user'));
   app.use('/auth', require('./auth'));
   app.post('/forgotpassword', require('./forgotpassword').reset);

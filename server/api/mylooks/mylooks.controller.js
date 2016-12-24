@@ -34,6 +34,27 @@ module.exports.scrapeUpload = function (req, res) {
     })
 }
 
+module.exports.getUserLooks = function(req,res){
+    Look.find({
+        email:req.params.id
+    })
+    .sort({
+        createTime:-1
+    })
+    .exec(function(err,look){
+        if(err){
+            console.log("Error in finding user looks "+err);
+            res.status(400).json(err);
+        }
+        else if (!look) {
+                res.status(404).json({ "message": "NO looks found" });
+            }
+        else{
+            console.log("User looks found");
+            res.status(200).json(look);
+        }
+    })
+}
 module.exports.allLooks = function (req, res) {
     console.log("Inside GetAllLooks");
     Look.find({})
@@ -74,9 +95,156 @@ module.exports.fileUpload = function (req, res) {
         }
         else {
             console.log("look is saved to the server");
-            console.log(look);
             res.status(200).json(look);
         }
     })
 
+}
+module.exports.singleLook = function (req, res) {
+    Look.findById(req.params.lookId)
+        .exec(function (err, look) {
+            if (err) {
+                console.log("Error in finding look for "+req.params.lookId+" Error: " + err);
+                res.status(400).json(err);
+            }
+            else if (!look) {
+                return res.send(404);
+            }
+            else {
+                console.log("Look found");
+                res.status(200).json(look);
+            }
+        })
+}
+module.exports.getUpdateLook = function(req,res){
+     Look.findById(req.params.lookId)
+        .exec(function (err, look) {
+            if (err) {
+                console.log("Error in finding look for "+req.params.lookId+" Error: " + err);
+                res.status(400).json(err);
+            }
+            else if (!look) {
+                return res.send(404);
+            }
+            else {
+                console.log("Look found");
+                res.status(200).json(look);
+            }
+        })
+}
+exports.popLooks = function(req, res) {
+  Look.find({email:req.params.id})
+    .sort('-upVotes')
+    .limit(6)
+    .exec(function(err, looks) {
+      if (err) {
+         console.log("Error in finding look for "+req.params.id+" Error: " + err);
+                res.status(400).json(err);
+      }
+      console.log(looks);
+      return res.json(looks);
+    });
+}
+module.exports.update = function (req, res) {
+    if (req.body._id) {
+        delete req.body._id;
+    }
+    Look.findById(req.params.id)
+        .exec(function (err, look) {
+            if (err) {
+                console.log("Error in finding look " + err);
+                res.status(400).json(err);
+
+            }
+            else if (!look) {
+                console.log("Look not found");
+                res.status(404).json({ "message": "Look not found for updating" });
+            }
+            else {
+                var updated = _.merge(look, req.body);
+                updated.save(function (err, updatedLook) {
+                    if (err) {
+                        console.log("Error in updating look " + err);
+                        res.status(403).json(err);
+                    }
+                    else {
+                        console.log("look updated");
+                        res.status(204).json(updatedLook);
+                    }
+                })
+            }
+        })
+}
+
+module.exports.deleteLook = function (req, res) {
+    Look.findByIdAndRemove(req.params.id)
+        .exec(function (err, look) {
+            if (err) {
+                console.log("Error in deleting look " + err);
+                res.status(400).json(err)
+            }
+            else if (!look) {
+                console.log("No look found to delete");
+                res.status(404).json({ "message": "No look to delete" });
+            }
+            else {
+                console.log("Look deleted");
+                res.status(200).json(look);
+            }
+        })
+}
+
+module.exports.addView = function (req, res) {
+    Look.findById(req.params.id)
+        .exec(function (err, look) {
+            if (err) {
+                console.log("Error in finding look " + err);
+                res.status(400).json(err);
+
+            }
+            else if (!look) {
+                console.log("Look not found");
+                res.status(404).json({ "message": "Look not found for updating" });
+            }
+            else {
+                look.view++;
+                look.save(function (err, updatedLook) {
+                    if (err) {
+                        console.log("Error in updating view for look " + err);
+                        res.status(403).json(err);
+                    }
+                    else {
+                        console.log("view for look updated");
+                        res.status(204).json(updatedLook);
+                    }
+                })
+            }
+        })
+}
+module.exports.upVote = function (req, res) {
+    Look.findById(req.params.id)
+        .exec(function (err, look) {
+            if (err) {
+                console.log("Error in finding look " + err);
+                res.status(400).json(err);
+
+            }
+            else if (!look) {
+                console.log("Look not found");
+                res.status(404).json({ "message": "Look not found for updating" });
+            }
+            else {
+                look.upVotes++;
+                look.save(function (err, updatedLook) {
+                    if (err) {
+                        console.log("Error in updating upvotes for look " + err);
+                        res.status(403).json(err);
+                    }
+                    else {
+                        console.log("upVotes for look updated");
+                        res.status(204).json(updatedLook);
+                    }
+                })
+            }
+        })
 }

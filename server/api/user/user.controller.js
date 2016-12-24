@@ -59,9 +59,11 @@ exports.show = function (req, res, next) {
  * restriction: 'admin'
  */
 exports.destroy = function(req, res) {
+  console.log("Deleting user");
   User.findByIdAndRemove(req.params.id, function(err, user) {
     if(err) return res.send(500, err);
-    return res.send(204);
+    console.log("User deleted: "+user);
+    return res.send(204).json(user);
   });
 };
 
