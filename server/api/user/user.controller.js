@@ -86,7 +86,7 @@ exports.changePassword = function(req, res, next) {
       res.send(403);
     }
   });
-};
+}; 
 
 // reset a users password:
 
