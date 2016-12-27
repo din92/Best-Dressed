@@ -49,15 +49,20 @@ var all = {
   },
 
   facebook: {
-    clientID:     process.env.FACEBOOK_ID || 'id',
-    clientSecret: process.env.FACEBOOK_SECRET || 'secret',
+    //clientID:     process.env.FACEBOOK_ID || 'id',
+    clientID:     '1338166652921758',
+    //clientSecret: process.env.FACEBOOK_SECRET || 'secret',
+    clientSecret: '3fb839d96174ab2ab1c71c6bf7cf45e9',
     callbackURL:  (process.env.DOMAIN || '') + '/auth/facebook/callback'
   },
 
   twitter: {
-    clientID:     process.env.TWITTER_ID || 'id',
-    clientSecret: process.env.TWITTER_SECRET || 'secret',
+    clientID:    "0EfVanY8ZjWM1crfWaiZZjW6v",
+    clientSecret: 	"Y13giFHltCi9ZbwickacwslSKhudLQ7hby81yjRo3PRC21hpdJ",
     callbackURL:  (process.env.DOMAIN || '') + '/auth/twitter/callback'
+    /*clientID:     process.env.TWITTER_ID || 'id',
+    clientSecret: process.env.TWITTER_SECRET || 'secret',
+    callbackURL:  (process.env.DOMAIN || '') + '/auth/twitter/callback'*/
   },
 
 };

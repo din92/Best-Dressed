@@ -116,6 +116,7 @@
 
       };
       looksAPI.addScrapePost(look).then(function (response) {
+        $scope.uploading = true;
         $scope.showScrapeDetails = false;
         $scope.gotScrapeResults = false;
         $scope.look.title = "";

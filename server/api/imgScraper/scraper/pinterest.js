@@ -1,5 +1,5 @@
 "use script"
-
+var fs = require("fs");
 var request= require("request");
 var cheerio = require("cheerio");
 module.exports.list= function(url,cb){
@@ -10,11 +10,12 @@ module.exports.list= function(url,cb){
             });
          }
          if(!error){
+          
              var $ = cheerio.load(body);
              var pin = {};
              var $url = url;
-             var $img = $(".heightContainer img").attr("src");
-             var $desc = $(".heightContainer img").attr("alt");
+             var $img = $('.heightContainer img').attr('src');
+            var $desc = $('.heightContainer img').attr('alt');
              console.log("The image caught:"+$img +" "+ url);
 
              var pin={
